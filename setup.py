@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="b3futurecontracts",
-    version="0.0.1",
+    version="0.0.2",
     author="Alvaro Figueiredo",
     author_email="alvaro.af@gmail.com",
     description="Rollover date of future contracts from the B3 exchange",
@@ -18,5 +18,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.5',
+    python_requires='>=3',
 )
