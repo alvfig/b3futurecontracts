@@ -22,3 +22,8 @@ print(futureindex.rollover_date(), futureindex.current_name()[0])
 ```shell
 python -m b3futurecontracts
 ```
+
+## Install
+```shell
+pip install b3futurecontracts
+```
