@@ -18,3 +18,7 @@ print(today)
 futureindex = B3FutureIndex(today)
 print(futureindex.rollover_date(), futureindex.current_name()[0])
 ```
+
+```shell
+python -m b3futurecontracts
+```
