@@ -90,6 +90,9 @@ class B3FutureContract:
     '''Future contract from B3 exchange base class'''
     names_ = []
 
+    def __init__(self, date=None):
+        self.date = date
+
     def serie_of_month(self, month):
         '''Returns the serie of the contract at month'''
         raise NotImplementedError()
@@ -103,8 +106,12 @@ class B3FutureContract:
         '''Format the contract name'''
         return '{}{}{}'.format(name, serie, rolldate.strftime('%y'))
 
-    def current_name(self, date):
+    def current_name(self, date=None):
         '''Return the name of the current contract on date'''
+        if date is None:
+            date = self.date
+            if date is None:
+                raise ValueError('There is no date to evaluate')
         rolldate = self.rollover_date(date)
         serie = self.serie_of_month(rolldate.month)
         names = (
@@ -122,7 +129,11 @@ class B3FutureIndex(B3FutureContract):
     def serie_of_month(self, month):
         return self.series_[month//2 - 1]
 
-    def rollover_date(self, date):
+    def rollover_date(self, date=None):
+        if date is None:
+            date = self.date
+            if date is None:
+                raise ValueError('There is no date to evaluate')
         year, month = date.year, date.month
         if month % 2 != 0:
             year, month = increment_month(year, month)
@@ -143,7 +154,11 @@ class B3FutureDollar(B3FutureContract):
     def serie_of_month(self, month):
         return self.series_[month - 1]
 
-    def rollover_date(self, date):
+    def rollover_date(self, date=None):
+        if date is None:
+            date = self.date
+            if date is None:
+                raise ValueError('There is no date to evaluate')
         year, month = date.year, date.month
         year, month = increment_month(year, month)
         basedate = dt.date(year, month, 1)

@@ -15,6 +15,6 @@ from b3futurecontracts import *
 today = dt.date.today()
 print(today)
 
-futureindex = B3FutureIndex()
-print(futureindex.rollover_date(today), futureindex.current_name(today))
+futureindex = B3FutureIndex(today)
+print(futureindex.rollover_date(), futureindex.current_name()[0])
 ```
