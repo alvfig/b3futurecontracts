@@ -90,7 +90,7 @@ def first_workday(date):
 
 class B3FutureContract:
     '''Future contract from B3 exchange base class'''
-    __names = ()
+    _names = ()
 
     def __init__(self, date=None):
         if date is not None and not isinstance(date, dt.date):
@@ -117,15 +117,15 @@ class B3FutureContract:
         rolldate = self.rollover_date(date)
         serie = self.serie_of_month(rolldate.month)
         names = (
-            self.__format_name(self.__names[0], serie, rolldate),
-            self.__format_name(self.__names[1], serie, rolldate)
+            self.__format_name(self._names[0], serie, rolldate),
+            self.__format_name(self._names[1], serie, rolldate)
         )
         return names
 
 
 class B3FutureIndex(B3FutureContract):
     '''Future index contract rollover date class'''
-    __names = ('WIN', 'IND')
+    _names = ('WIN', 'IND')
     __series = 'GJMQVZ'
 
     def serie_of_month(self, month):
@@ -157,7 +157,7 @@ class B3FutureIndex(B3FutureContract):
 
 class B3FutureDollar(B3FutureContract):
     '''Future dollar contract rollover date class'''
-    __names = ('WDO', 'DOL')
+    _names = ('WDO', 'DOL')
     __series = 'FGHJKMNQUVXZ'
 
     def serie_of_month(self, month):
