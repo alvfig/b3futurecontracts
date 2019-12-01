@@ -1,6 +1,6 @@
 #!/usr/bin/python3
-'''B3 is a stock exchange in Sao Paulo, Brazil.
-This module evaluate the rollover date of some of its future contracts.'''
+'''B3 is a stock exchange in Sao Paulo, Brazil. This module
+evaluates the rollover date of some of its future contracts.'''
 
 import datetime as dt
 
@@ -8,10 +8,10 @@ __all__ = ['B3FutureIndex', 'B3FutureDollar']
 
 
 def easter(year):
-    '''Evaluate Easter's day of year.'''
+    '''Evaluates the Easter day of year.'''
 
     if not isinstance(year, int):
-        raise TypeError('year must be integer')
+        raise TypeError('year must be an integer')
     if year < 1582:
         raise ValueError('year must be greater than 1582')
 
@@ -34,7 +34,7 @@ def easter(year):
 
 
 def holidays(year):
-    '''Return all holidays of year on Sao Paulo, Brazil'''
+    '''Returns all holidays of year on Sao Paulo, Brazil'''
 
     holidays_ = [
         dt.date(year, 1, 1),    # New Year
@@ -69,8 +69,10 @@ def holidays(year):
 
 def increment_month(year, month, increment=1):
     '''Increments month by increment and returns the resulting year and month'''
+    if not all((isinstance(x, int) for x in (year, month, increment))):
+        raise TypeError('year, month and increment must be integers')
     if not 1 <= month <= 12:
-        raise ValueError('{} is a invalid month'.format(month))
+        raise ValueError('invalid month {}'.format(month))
     month += increment
     while 12 < month:
         month -= 12
@@ -88,7 +90,7 @@ def first_workday(date):
 
 class B3FutureContract:
     '''Future contract from B3 exchange base class'''
-    names_ = []
+    __names = ()
 
     def __init__(self, date=None):
         if date is not None and not isinstance(date, dt.date):
@@ -109,31 +111,34 @@ class B3FutureContract:
         return '{}{}{}'.format(name, serie, rolldate.strftime('%y'))
 
     def current_name(self, date=None):
-        '''Return the name of the current contract on date'''
+        '''Returns the names of the current contract on date'''
         if date is None:
             date = self.date
         rolldate = self.rollover_date(date)
         serie = self.serie_of_month(rolldate.month)
         names = (
-            self.__format_name(self.names_[0], serie, rolldate),
-            self.__format_name(self.names_[1], serie, rolldate)
+            self.__format_name(self.__names[0], serie, rolldate),
+            self.__format_name(self.__names[1], serie, rolldate)
         )
         return names
 
 
 class B3FutureIndex(B3FutureContract):
-    '''Future index rollover date class'''
-    names_ = ('WIN', 'IND')
-    series_ = 'GJMQVZ'
+    '''Future index contract rollover date class'''
+    __names = ('WIN', 'IND')
+    __series = 'GJMQVZ'
 
     def serie_of_month(self, month):
         if not isinstance(month, int):
             raise TypeError('month must be an integer')
         if not 1 <= month <= 12:
             raise ValueError('invalid month {}'.format(month))
-        return self.series_[month//2 - 1]
+        return self.__series[month//2 - 1]
 
     def rollover_date(self, date=None):
+        '''The rollover date of the future index contract is the
+        nearest wednesday to the 15th day of the even months, or the
+        first subsequent workday'''
         if date is None:
             date = self.date
         elif not isinstance(date, dt.date):
@@ -151,18 +156,20 @@ class B3FutureIndex(B3FutureContract):
 
 
 class B3FutureDollar(B3FutureContract):
-    '''Future dollar rollover date class'''
-    names_ = ('WDO', 'DOL')
-    series_ = 'FGHJKMNQUVXZ'
+    '''Future dollar contract rollover date class'''
+    __names = ('WDO', 'DOL')
+    __series = 'FGHJKMNQUVXZ'
 
     def serie_of_month(self, month):
         if not isinstance(month, int):
             raise TypeError('month must be an integer')
         if not 1 <= month <= 12:
             raise ValueError('invalid month {}'.format(month))
-        return self.series_[month - 1]
+        return self.__series[month - 1]
 
     def rollover_date(self, date=None):
+        '''The rollover date of the future dollar contract is the
+        first workday of each month'''
         if date is None:
             date = self.date
         elif not isinstance(date, dt.date):
@@ -175,9 +182,9 @@ class B3FutureDollar(B3FutureContract):
 
 
 def main(year):
-    '''Tests the classes with some dates'''
-    dollar = B3FutureDollar()
+    '''Tests the classes with some arbitrary dates'''
     index = B3FutureIndex()
+    dollar = B3FutureDollar()
     for month in range(1, 13):
         for day in (5, 20):
             date = dt.date(year, month, day)

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="b3futurecontracts",
-    version="0.0.2",
+    version="0.0.3",
     author="Alvaro Figueiredo",
     author_email="alvaro.af@gmail.com",
     description="Rollover date of future contracts from the B3 exchange",
