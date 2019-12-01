@@ -4,7 +4,7 @@ B3 is a stock exchange in Sao Paulo, Brazil. This module evaluates the rollover 
 
 ## Classes
 
-Currently this module provides two classes, `B3FutureIndex` and `B3FutureDollar`. The classes have two main methods, `rollover_date` and `current_name`; both accepts an date as argument and return the rollover date and the current name of the future contract as of the given date, respectively.
+Currently this module provides two classes, `B3FutureIndex` and `B3FutureDollar`. The classes have two main methods, `rollover_date` and `current_name`; both take a date as argument and return the rollover date and the current name of the future contract as of the given date, respectively.
 
 ## Sample code
 
