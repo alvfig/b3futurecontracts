@@ -91,6 +91,8 @@ class B3FutureContract:
     names_ = []
 
     def __init__(self, date=None):
+        if date is not None and not isinstance(date, dt.date):
+            raise TypeError('date must be a datetime.date object')
         self.date = date if date is not None else dt.date.today()
 
     def serie_of_month(self, month):
@@ -102,7 +104,7 @@ class B3FutureContract:
         raise NotImplementedError()
 
     @staticmethod
-    def format_name(name, serie, rolldate):
+    def __format_name(name, serie, rolldate):
         '''Format the contract name'''
         return '{}{}{}'.format(name, serie, rolldate.strftime('%y'))
 
@@ -113,8 +115,8 @@ class B3FutureContract:
         rolldate = self.rollover_date(date)
         serie = self.serie_of_month(rolldate.month)
         names = (
-            self.format_name(self.names_[0], serie, rolldate),
-            self.format_name(self.names_[1], serie, rolldate)
+            self.__format_name(self.names_[0], serie, rolldate),
+            self.__format_name(self.names_[1], serie, rolldate)
         )
         return names
 
@@ -125,11 +127,17 @@ class B3FutureIndex(B3FutureContract):
     series_ = 'GJMQVZ'
 
     def serie_of_month(self, month):
+        if not isinstance(month, int):
+            raise TypeError('month must be an integer')
+        if not 1 <= month <= 12:
+            raise ValueError('invalid month {}'.format(month))
         return self.series_[month//2 - 1]
 
     def rollover_date(self, date=None):
         if date is None:
             date = self.date
+        elif not isinstance(date, dt.date):
+            raise TypeError('date must be a datetime.date object')
         year, month = date.year, date.month
         if month % 2 != 0:
             year, month = increment_month(year, month)
@@ -148,11 +156,17 @@ class B3FutureDollar(B3FutureContract):
     series_ = 'FGHJKMNQUVXZ'
 
     def serie_of_month(self, month):
+        if not isinstance(month, int):
+            raise TypeError('month must be an integer')
+        if not 1 <= month <= 12:
+            raise ValueError('invalid month {}'.format(month))
         return self.series_[month - 1]
 
     def rollover_date(self, date=None):
         if date is None:
             date = self.date
+        elif not isinstance(date, dt.date):
+            raise TypeError('date must be a datetime.date object')
         year, month = date.year, date.month
         year, month = increment_month(year, month)
         basedate = dt.date(year, month, 1)
