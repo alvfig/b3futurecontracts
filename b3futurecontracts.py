@@ -147,7 +147,10 @@ class B3FutureIndex(B3FutureContract):
         if month % 2 != 0:
             year, month = increment_month(year, month)
         basedate = dt.date(year, month, 15)
-        rolldate = basedate + dt.timedelta(days=2-basedate.weekday())
+        offset0 = 2 - basedate.weekday()
+        offset1 = 7 + offset0
+        offset = offset0 if abs(offset0) < abs(offset1) else offset1
+        rolldate = basedate + dt.timedelta(days=offset)
         rolldate = first_workday(rolldate)
         if rolldate < date:
             year, month = increment_month(year, month, 2)
