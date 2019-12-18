@@ -152,7 +152,7 @@ class B3FutureIndex(B3FutureContract):
         offset = offset0 if abs(offset0) < abs(offset1) else offset1
         rolldate = basedate + dt.timedelta(days=offset)
         rolldate = first_workday(rolldate)
-        if rolldate < date:
+        if rolldate <= date:
             year, month = increment_month(year, month, 2)
             rolldate = self.rollover_date(dt.date(year, month, 1))
         return rolldate
