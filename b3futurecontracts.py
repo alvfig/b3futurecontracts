@@ -91,6 +91,7 @@ def first_workday(date):
 class B3FutureContract:
     '''Future contract from B3 exchange base class'''
     _names = ()
+    _series = 'FGHJKMNQUVXZ'
 
     def __init__(self, date=None):
         if date is not None and not isinstance(date, dt.date):
@@ -126,14 +127,15 @@ class B3FutureContract:
 class B3FutureIndex(B3FutureContract):
     '''Future index contract rollover date class'''
     _names = ('WIN', 'IND')
-    __series = 'GJMQVZ'
 
     def serie_of_month(self, month):
         if not isinstance(month, int):
             raise TypeError('month must be an integer')
         if not 1 <= month <= 12:
             raise ValueError('invalid month {}'.format(month))
-        return self.__series[month//2 - 1]
+        if month % 2 != 0:
+            raise ValueError('odd month {}'.format(month))
+        return self._series[month - 1]
 
     def rollover_date(self, date=None):
         '''The rollover date of the future index contract is the
@@ -161,14 +163,13 @@ class B3FutureIndex(B3FutureContract):
 class B3FutureDollar(B3FutureContract):
     '''Future dollar contract rollover date class'''
     _names = ('WDO', 'DOL')
-    __series = 'FGHJKMNQUVXZ'
 
     def serie_of_month(self, month):
         if not isinstance(month, int):
             raise TypeError('month must be an integer')
         if not 1 <= month <= 12:
             raise ValueError('invalid month {}'.format(month))
-        return self.__series[month - 1]
+        return self._series[month - 1]
 
     def rollover_date(self, date=None):
         '''The rollover date of the future dollar contract is the
